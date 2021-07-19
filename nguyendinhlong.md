@@ -170,16 +170,68 @@ def processData(row):
     }
 ```
 
+- Tiếp theo Formart dữ liệu OKR và gửi lên Box Chatwork nhé:
+```
+def mappingChatWorkIdWithNameTraSuaGroup():
+    return {
+        'Phạm Xuân Nam': '[To:4945012]Pham Xuan Nam (97)',
+        'Lê Thị Bé': '[To:3731269]Le Thi Be',
+        'Nguyễn Phước Thắng': '[To:4808136]Nguyen Phuoc Thang (92)',
+        'Nguyễn Đình Long': '[To:5044471]Nguyen Dinh Long',
+        'Nguyễn Văn Ngọc B': '[To:2347431]Nguyen Van Ngoc B',
+        'Nguyễn Văn Thành E': '[To:6044039]Nguyen Van Thanh E'
+    }
+
+def getCurrentTime():
+    try:
+        currentTime = requests.get('http://worldtimeapi.org/api/timezone/Asia/Bangkok')
+
+        return currentTime.json()
+    except:
+        print("get current time err")
+
+def sendDataToChatWorkRoom(dataAlert, room_id, tokenChatwork):
+    client = ch.ChatworkClient(tokenChatwork)
+    res = client.get_messages(room_id= room_id, force=True)
+    if (res):
+        dayTime = getCurrentTime()['datetime'].split("T")
+        client.post_messages(room_id=room_id, message='[code]' + ' TRACKING OKR TOOL ' + dayTime[0] + " At: " + dayTime[1].split(".")[0] +  '[/code]')
+        for data in dataAlert:
+            time.sleep(1)
+            client.post_messages(room_id= room_id, message=formatMessageSend(data))
+
+def formatMessageSend(row, okrUpdateThresold = 100):
+    messageAlert = ''
+    if (int(str(row['okr_update']).replace("%", "")) < okrUpdateThresold):
+        messageAlert = ' - Chưa Update OKR nè (tat)'
+
+    return '[info]' + '[title]' + row['to'] + ' (*)' + row['status'] + '  ' + messageAlert +  '[/title]' + ' (*) OKR FORMAT: ' + row['okr_format'] + ' (h) OKR UPDATE: ' + row['okr_update'] + ' (F) CURENT PROCESS: ' + row['current_process']  + '[/info]'
+    
+roomId = ''
+token = ''
+username = ""
+password = ""
+
+def task():
+    try:
+        driver = initDriverProfile("tracking")
+        if (loginWSM(driver, username, password)):
+            loginOKR(driver)
+            sendDataToChatWorkRoom(trackingData(driver), roomId, token)
+
+        driver.close()
+    except:
+        driver.close()
+        client = ch.ChatworkClient(token)
+        client.post_messages(room_id=roomId, message='[To:5044471]Nguyen Dinh Long - Tool có vấn đề rồi a ey (F)')
+        print("Tracking Fail")
+
+task()
+```
 
 
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+
+
 
 ## Development
 
