@@ -299,3 +299,182 @@ Hi vọng không bị ăn (X) thêm lần nào n
 
 
 
+Full Source: 
+
+```
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time
+import requests
+import os
+import pychatwork as ch
+
+def initDriverProfile(profile):
+    CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
+    WINDOW_SIZE = "400,600"
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+    chrome_options.add_argument("user-data-dir=/home/dinhlongit/.config/google-chrome/" + str(profile))
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('disable-infobars')
+    chrome_options.add_argument('--disable-gpu') if os.name == 'nt' else None
+    chrome_options.add_argument("--verbose")
+    chrome_options.add_argument("--no-default-browser-check")
+    chrome_options.add_argument("--ignore-ssl-errors")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--disable-web-security")
+    chrome_options.add_argument("--disable-feature=IsolateOrigins,site-per-process")
+    chrome_options.add_argument("--no-first-run")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-translate")
+    chrome_options.add_argument("--ignore-certificate-error-spki-list")
+    chrome_options.add_argument("--ignore-certificate-errors")
+    chrome_options.add_argument("--disable-blink-features=AutomationControllered")
+    chrome_options.add_experimental_option('useAutomationExtension', False)
+    prefs = {"profile.default_content_setting_values.notifications": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument("--start-maximized")  # open Browser in maximized mode
+    chrome_options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
+    chrome_options.add_argument('disable-infobars')
+
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,
+                              options=chrome_options
+                              )
+    return driver
+
+def checkIsLogin(driver):
+    try:
+        isLogin = driver.find_elements_by_xpath('//a[contains(@href, "dashboard/user_timesheets")]')
+        if len(isLogin):
+            print("Logined!")
+            return True
+
+        return False
+    except:
+        print("check login err")
+        return False
+
+def loginWSM(driver, username, password):
+    try:
+        driver.get("https://wsm.sun-asterisk.vn/")
+        time.sleep(2)
+        if (checkIsLogin(driver)):
+            return True
+        driver.find_elements_by_class_name('btn-login')[0].click()
+        time.sleep(1)
+        driver.find_elements_by_id('user_email')[0].send_keys(username)
+        time.sleep(1)
+        driver.find_elements_by_id('user_password')[0].send_keys(password)
+        time.sleep(1)
+        driver.find_elements_by_class_name('span-remember')[0].click()
+        time.sleep(2)
+        driver.find_elements_by_id('wsm-login-button')[0].click()
+        time.sleep(5)
+        print("Login WSM Success!")
+
+        return True
+    except:
+        print("Login Err!")
+        return False
+
+
+def loginOKR(driver):
+    try:
+        driver.get("https://goal.sun-asterisk.vn/login/framgia")
+        time.sleep(3)
+        print("Login SGoal Success")
+        return True
+    except:
+        print("Login OKR Err")
+        return False
+
+def trackingData(driver, groupId = "3079"):
+    try:
+        dataMyGroup = mappingChatWorkIdWithNameTraSuaGroup()
+        driver.get("https://goal.sun-asterisk.vn/groups/" + str(groupId) + "#member-tab")
+        elements = driver.find_elements_by_xpath('//*[@id="member-list-table"]/tbody/tr')
+        time.sleep(2)
+        print("This Group Have: " + str(len(elements)) + " Member")
+        totalData = []
+        for member in elements:
+            time.sleep(1)
+            dataRow = processData(member.text)
+            if dataRow['name'] in dataMyGroup:
+                dataRow['to'] = dataMyGroup[dataRow['name']]
+                totalData.append(dataRow)
+
+        return totalData
+    except:
+        print("Extrack data fail")
+
+def processData(row):
+    data = row.split("\n")
+    return {
+        "name" : data[1],
+        "okr_format": data[-5],
+        "okr_update": data[-4],
+        "current_process": data[-3],
+        "status": data[-2],
+        "time": data[-1]
+    }
+
+def mappingChatWorkIdWithNameTraSuaGroup():
+    return {
+        'Phạm Xuân Nam': '[To:4945012]Pham Xuan Nam (97)',
+        'Lê Thị Bé': '[To:3731269]Le Thi Be',
+        'Nguyễn Phước Thắng': '[To:4808136]Nguyen Phuoc Thang (92)',
+        'Nguyễn Đình Long': '[To:5044471]Nguyen Dinh Long',
+        'Nguyễn Văn Ngọc B': '[To:2347431]Nguyen Van Ngoc B',
+        'Nguyễn Văn Thành E': '[To:6044039]Nguyen Van Thanh E'
+    }
+
+def getCurrentTime():
+    try:
+        currentTime = requests.get('http://worldtimeapi.org/api/timezone/Asia/Bangkok')
+
+        return currentTime.json()
+    except:
+        print("get current time err")
+
+def sendDataToChatWorkRoom(dataAlert, room_id, tokenChatwork):
+    client = ch.ChatworkClient(tokenChatwork)
+    res = client.get_messages(room_id= room_id, force=True)
+    if (res):
+        dayTime = getCurrentTime()['datetime'].split("T")
+        client.post_messages(room_id=room_id, message='[code]' + ' TRACKING OKR TOOL ' + dayTime[0] + " At: " + dayTime[1].split(".")[0] +  '[/code]')
+        for data in dataAlert:
+            time.sleep(1)
+            client.post_messages(room_id= room_id, message=formatMessageSend(data))
+
+def formatMessageSend(row, okrUpdateThresold = 100):
+    messageAlert = ''
+    if (int(str(row['okr_update']).replace("%", "")) < okrUpdateThresold):
+        messageAlert = ' - Chưa Update OKR nè (tat)'
+
+    return '[info]' + '[title]' + row['to'] + ' (*)' + row['status'] + '  ' + messageAlert +  '[/title]' + ' (*) OKR FORMAT: ' + row['okr_format'] + ' (h) OKR UPDATE: ' + row['okr_update'] + ' (F) CURENT PROCESS: ' + row['current_process']  + '[/info]'
+
+
+roomId = '237172731'
+token = 'xxxxxxxxx'
+username = "xxxxxxxx@sun-asterisk.com"
+password = "xxxxxxxxx"
+
+def task():
+    try:
+        driver = initDriverProfile("tracking")
+        if (loginWSM(driver, username, password)):
+            loginOKR(driver)
+            sendDataToChatWorkRoom(trackingData(driver), roomId, token)
+
+        driver.close()
+    except:
+        driver.close()
+        client = ch.ChatworkClient(token)
+        client.post_messages(room_id=roomId, message='[To:5044471]Nguyen Dinh Long - Tool có vấn đề rồi a ey (F)')
+        print("Tracking Fail")
+
+task()
+```
