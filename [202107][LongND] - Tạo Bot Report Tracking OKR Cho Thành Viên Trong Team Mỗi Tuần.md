@@ -27,12 +27,12 @@ Vậy nên Tool này viết ra nhằm mục đích tracking việc update OKR c�
 
 ## Tech sử dụng :
 
-- [Selenium] - Đây là 1 framework kiểm thử tự độn( Automation Tesing ) cho phép chúng ta điều khiển trình duyệt một cách tự động theo kịch bản có sẵn.  
+- [Selenium] - Đây là 1 framework kiểm thử tự động ( Automation Tesing ) cho phép chúng ta điều khiển trình duyệt một cách tự động theo kịch bản có sẵn.  
 - [Chatwork API] - Sử dụng Python và thư viện pychatwork để thao tác với API mà chatwork hỗ trợ.
 - [Python] - Sử dụng ngôn ngữ lập trình Python
 
 ## Cài đặt Selenium trên Linux:
-- Precondition :Máy đã cài python và pip nhé
+- Precondition :Máy đã cài python3 và pip3 nhé
 - Step 1 - Install Selenium
 ```
 pip3 install selenium
