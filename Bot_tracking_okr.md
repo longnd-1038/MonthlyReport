@@ -254,7 +254,7 @@ task()
 
 
 
-## Deploy lên server: ( nhớ bảo mật thông tin nhó có thể encryption code để run cho an toàn ):
+## Deploy lên server: ( nhớ bảo mật thông tin nhó, có thể Encrypt code để run cho an toàn ):
 - Lên server thì cũng cài môi trường tương tự.
 - Nhớ check Timezone cho đúng với giờ Việt Nam (setting bằng cách) :
 ```
