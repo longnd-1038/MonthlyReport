@@ -109,6 +109,19 @@ Những chrome_options params trên mục đích là bypass một số trang web
 - Tiếp theo là Script Login Vào WSM Và Sgoal để lưu lại phiên làm việc:
 
 ```
+def checkIsLogin(driver):
+    try:
+        isLogin = driver.find_elements_by_xpath('//a[contains(@href, "dashboard/user_timesheets")]')
+        if len(isLogin):
+            print("Logined!")
+            return True
+
+        return False
+    except:
+        print("check login err")
+        return False
+
+
 def loginWSM(driver, username, password):
     try:
         driver.get("https://wsm.sun-asterisk.vn/")
@@ -241,79 +254,48 @@ task()
 
 
 
-## Kết quả script chạy trực quan sẽ như thế nào ?
-![Alt Text](https://user-images.githubusercontent.com/68221273/126178796-c429cc2e-ae5d-435a-91a2-16cccc649947.mp4)
-
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantaneously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-
-```sh
-node app
+## Deploy lên server: ( nhớ bảo mật thông tin nhó có thể encryption code để run cho an toàn ):
+- Lên server thì cũng cài môi trường tương tự.
+- Nhớ check Timezone cho đúng với giờ Việt Nam (setting bằng cách) :
+```
+timedatectl
+#Set time zone (ex Bangkok)
+sudo timedatectl list-timezones | grep Bangkok
+sudo timedatectl set-timezone Asia/Bangkok
+#Check xem đúng Timezone chưa
+timedatectl
 ```
 
-Second Tab:
+- Cài đặt NTP Server để đồng bộ thời gian:
+```
+sapt install chrony
+vim /etc/chrony.conf	
+#client port (udp)
+acquisitionport 1123
 
-```sh
-gulp watch
+sudo systemctl start chronyd
+sudo systemctl enable chronyd
+sudo systemctl status chronyd
+chronyc sources
+```
+- Viết file sh (/root/cron.sh) để run script: 
+```
+#!/bin/bash
+
+python3 /tool/okr/index.py
 ```
 
-(optional) Third:
+- Setting cron chạy 15h thứ năm và thứ sáu:
+```
+sudo crontab -e
 
-```sh
-karma test
+// Add 2 line này
+00 15 * * 4,5 sh /root/cron.sh >/dev/null 2>&1
 ```
 
-#### Building for source
+## The End:
 
-For production release:
+Hi vọng không bị ăn (X) thêm lần nào n
 
-```sh
-gulp build --prod
-```
 
-Generating pre-built zip archives for distribution:
 
-```sh
-gulp build dist --prod
-```
-
-## Docker
-
-Dillinger is very easy to install and deploy in a Docker container.
-
-By default, the Docker will expose port 8080, so change this within the
-Dockerfile if necessary. When ready, simply use the Dockerfile to
-build the image.
-
-```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
-```
-
-This will create the dillinger image and pull in the necessary dependencies.
-Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
-
-Once done, run the Docker image and map the port to whatever you wish on
-your host. In this example, we simply map port 8000 of the host to
-port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
-
-```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
-```
-
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
-
-Verify the deployment by navigating to your server address in
-your preferred browser.
-
-```sh
-127.0.0.1:8000
-```
