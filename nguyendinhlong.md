@@ -2,6 +2,11 @@
 
 ![image](https://user-images.githubusercontent.com/68221273/126114466-5902b940-d3df-4ac7-8784-6fc1772f16c3.png)
 
+
+
+
+
+
 Mỗi tuần trôi qua rất nhanh với nhiều đầu mục công việc cần phải hoàn thành, nhiều khi dặn lòng mình đừng quên UPDATE OKR nhé nhé (Ăn X đấy) nhưng mà "Đời không như mơ" tới khi bị ăn X rồi mới nhận ra là đã quá muộn màng rồi (yaoming).
 
 Vậy nên Tool này viết ra nhằm mục đích tracking việc update OKR của bản thân cũng như ae trong TEAM luôn:
@@ -233,7 +238,7 @@ task()
 
 
 ## Kết quả script chạy trực quan sẽ như thế nào ?
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+![Alt Text](https://user-images.githubusercontent.com/68221273/126178796-c429cc2e-ae5d-435a-91a2-16cccc649947.mp4)
 
 
 Want to contribute? Great!
