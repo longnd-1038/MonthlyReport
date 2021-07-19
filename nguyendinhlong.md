@@ -99,6 +99,77 @@ def initDriverProfile(profile):
 
 Những chrome_options params trên mục đích là bypass một số trang web có thể chặn trình duyệt ở chế độ testing và một số setting cần thiết như disable ảnh  trên trang web load cho nhanh = ))
 
+- Tiếp theo là Script Login Vào WSM Và Sgoal để lưu lại phiên làm việc:
+
+```
+def loginWSM(driver, username, password):
+    try:
+        driver.get("https://wsm.sun-asterisk.vn/")
+        time.sleep(2)
+        if (checkIsLogin(driver)):
+            return True
+        driver.find_elements_by_class_name('btn-login')[0].click()
+        time.sleep(1)
+        driver.find_elements_by_id('user_email')[0].send_keys(username)
+        time.sleep(1)
+        driver.find_elements_by_id('user_password')[0].send_keys(password)
+        time.sleep(1)
+        driver.find_elements_by_class_name('span-remember')[0].click()
+        time.sleep(2)
+        driver.find_elements_by_id('wsm-login-button')[0].click()
+        time.sleep(5)
+        print("Login WSM Success!")
+
+        return True
+    except:
+        print("Login Err!")
+        return False
+
+
+def loginOKR(driver):
+    try:
+        driver.get("https://goal.sun-asterisk.vn/login/framgia")
+        time.sleep(3)
+        print("Login SGoal Success")
+        return True
+    except:
+        print("Login OKR Err")
+        return False
+```
+
+- Viết một đoạn script để crawl data tình hình OKR member của team mình nào :
+```
+def trackingData(driver, groupId = "3079"):
+    try:
+        dataMyGroup = mappingChatWorkIdWithNameTraSuaGroup()
+        driver.get("https://goal.sun-asterisk.vn/groups/" + str(groupId) + "#member-tab")
+        elements = driver.find_elements_by_xpath('//*[@id="member-list-table"]/tbody/tr')
+        time.sleep(2)
+        print("This Group Have: " + str(len(elements)) + " Member")
+        totalData = []
+        for member in elements:
+            time.sleep(1)
+            dataRow = processData(member.text)
+            if dataRow['name'] in dataMyGroup:
+                dataRow['to'] = dataMyGroup[dataRow['name']]
+                totalData.append(dataRow)
+
+        return totalData
+    except:
+        print("Extrack data fail")
+
+def processData(row):
+    data = row.split("\n")
+    return {
+        "name" : data[1],
+        "okr_format": data[-5],
+        "okr_update": data[-4],
+        "current_process": data[-3],
+        "status": data[-2],
+        "time": data[-1]
+    }
+```
+
 
 
 | Plugin | README |
