@@ -62,9 +62,9 @@ def initDriverProfile(profile):
     CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
     WINDOW_SIZE = "400,600"
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    #chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
-    chrome_options.add_argument("user-data-dir=/home/dinhlongit/.config/google-chrome/" + str(profile))
+    chrome_options.add_argument("user-data-dir=./.config/google-chrome/" + str(profile))
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('disable-infobars')
     chrome_options.add_argument('--disable-gpu') if os.name == 'nt' else None
@@ -93,8 +93,6 @@ def initDriverProfile(profile):
                               options=chrome_options
                               )
     return driver
-    
-    driver = initDriverProfile("tracking")
 ```
 
 Những chrome_options params trên mục đích là bypass một số trang web có thể chặn trình duyệt ở chế độ testing và một số setting cần thiết như disable ảnh  trên trang web load cho nhanh = ))
@@ -234,7 +232,9 @@ task()
 
 
 
-## Development
+## Kết quả script chạy trực quan sẽ như thế nào ?
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
 
 Want to contribute? Great!
 
