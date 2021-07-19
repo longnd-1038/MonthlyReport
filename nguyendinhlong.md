@@ -3,9 +3,12 @@
 ![image](https://user-images.githubusercontent.com/68221273/126114466-5902b940-d3df-4ac7-8784-6fc1772f16c3.png)
 
 
-Chạy ở chế độ trực quan:
+Demo ở chế độ trực quan ( có thể setting chế độ console (headless) khi lên server) 
 
-https://user-images.githubusercontent.com/68221273/126179031-0c5ee84c-f6b3-4962-bc59-9b19d00ce071.mp4
+
+https://user-images.githubusercontent.com/68221273/126180723-002e2d6c-2f97-44eb-be9d-5d555273d830.mp4
+
+
 
 
 Mỗi tuần trôi qua rất nhanh với nhiều đầu mục công việc cần phải hoàn thành, nhiều khi dặn lòng mình đừng quên UPDATE OKR nhé nhé (Ăn X đấy) nhưng mà "Đời không như mơ" tới khi bị ăn X rồi mới nhận ra là đã quá muộn màng rồi (yaoming).
