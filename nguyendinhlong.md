@@ -4,7 +4,7 @@
 
 Mỗi tuần trôi qua rất nhanh với nhiều đầu mục công việc cần phải hoàn thành, nhiều khi dặn lòng mình đừng quên UPDATE OKR nhé nhé (Ăn X đấy) nhưng mà "Đời không như mơ" tới khi bị ăn X rồi mới nhận ra là đã quá muộn màng rồi (yaoming).
 
-Vậy nên mục đích của Tool này viết ra nhằm mục đích tracking việc update OKR của bản thân cũng như ae trong TEAM luôn:
+Vậy nên Tool này viết ra nhằm mục đích tracking việc update OKR của bản thân cũng như ae trong TEAM luôn:
 - Tool sẽ tư động crawl dữ liệu OKR của member trên https://goal.sun-asterisk.vn/ để lấy thông tin OKR của mọi người.
 - Dùng chatwork API để gửi report tình trạng update OKR của mọi người trong TEAM.
 - Sử dụng cron để send report định kỳ vào 15h thứ năm và thứ sáu hàng tuần.
