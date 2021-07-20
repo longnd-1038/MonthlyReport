@@ -292,6 +292,10 @@ sudo crontab -e
 // Add 2 line này
 00 15 * * 4,5 sh /root/cron.sh >/dev/null 2>&1
 ```
+- Nhớ bỏ comment dòng code này để chạy ở chế độ headless ( Không có giao diện nhé ) :
+```
+chrome_options.add_argument("--headless")
+```
 
 ## The End:
 
